@@ -1,7 +1,7 @@
 import { generateToken } from "../lib/utils.js";
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
-import { ENV } from "./env.js";
+import { ENV } from "./lib/env.js";
 import { sendWelcomeEmail } from "../emails/emailHandlers.js";
 
 export const  signup =  async (req,res) => {
