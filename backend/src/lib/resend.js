@@ -1,5 +1,5 @@
 import { Resend } from "resend";
-import { ENV } from "./lib/env.js";
+import { ENV } from "./env.js";
 
 
 
