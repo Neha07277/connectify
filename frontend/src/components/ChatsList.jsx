@@ -20,20 +20,40 @@ function ChatsList() {
       {chats.map((chat) => (
         <div
           key={chat._id}
-          className="bg-cyan-500/10 p-4 rounded-lg cursor-pointer hover:bg-cyan-500/20 transition-colors"
           onClick={() => setSelectedUser(chat)}
+          className="
+            p-4 mb-2 rounded-xl cursor-pointer backdrop-blur-xl transition-all 
+            bg-white/5 border border-white/10 shadow-md 
+            hover:bg-white/10 hover:shadow-[0_0_15px_rgba(0,255,200,0.5)]
+          "
         >
-          <div className="flex items-center gap-3">
-            <div className={`avatar ${onlineUsers.includes(chat._id) ? "online" : "offline"}`}>
-              <div className="size-12 rounded-full">
-                <img src={chat.profilePic || "/avatar.png"} alt={chat.fullName} />
-              </div>
+          <div className="flex items-center gap-4">
+            {/* Avatar */}
+            <div
+              className={`
+                relative size-12 
+                rounded-full overflow-hidden
+                ring-2 
+                ${onlineUsers.includes(chat._id) ? "ring-green-400" : "ring-slate-600"}
+                shadow-[0_0_10px_rgba(0,255,200,0.3)]
+              `}
+            >
+              <img
+                src={chat.profilePic || "/avatar.png"}
+                alt={chat.fullName}
+                className="w-full h-full object-cover"
+              />
             </div>
-            <h4 className="text-slate-200 font-medium truncate">{chat.fullName}</h4>
+
+            {/* Name */}
+            <h4 className="text-black font-semibold text-base truncate">
+              {chat.fullName}
+            </h4>
           </div>
         </div>
       ))}
     </>
   );
 }
+
 export default ChatsList;

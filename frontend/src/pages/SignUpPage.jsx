@@ -1,11 +1,21 @@
 import { useState } from "react";
 import { useAuthStore } from "../store/useAuthStore.js";
-import BorderAnimatedContainer from "../components/BorderAnimatedContainer";
-import { MessageCircleIcon, LockIcon, MailIcon, UserIcon, LoaderIcon } from "lucide-react";
+import {
+  UserIcon,
+  MailIcon,
+  LockIcon,
+  LoaderIcon,
+  MessageCircleIcon,
+} from "lucide-react";
 import { Link } from "react-router";
 
-function SignUpPage() {
-  const [formData, setFormData] = useState({ fullName: "", email: "", password: "" });
+export default function SignUpPage() {
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    password: "",
+  });
+
   const { signup, isSigningUp } = useAuthStore();
 
   const handleSubmit = (e) => {
@@ -14,119 +24,129 @@ function SignUpPage() {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-[#1a053b] to-[#3b0a87] p-4">
-      <div className="relative w-full max-w-6xl md:h-[800px] h-[650px] flex items-center justify-center">
-        <BorderAnimatedContainer>
-          <div className="w-full flex flex-col md:flex-row">
-
-            {/* LEFT FORM SECTION */}
-            <div className="md:w-1/2 p-8 flex items-center justify-center md:border-r border-purple-500/20 bg-[#240b52]">
-              <div className="w-full max-w-md">
-
-                {/* HEADING */}
-                <div className="text-center mb-8">
-                  <MessageCircleIcon className="w-12 h-12 mx-auto text-purple-300 mb-4" />
-                  <h2 className="text-2xl font-bold text-purple-100 mb-2">Create Account</h2>
-                  <p className="text-purple-300">Join Connectify today</p>
-                </div>
-
-                {/* FORM */}
-                <form onSubmit={handleSubmit} className="space-y-6">
-
-                  {/* FULL NAME */}
-                  <div>
-                    <label className="auth-input-label text-purple-200">Full Name</label>
-                    <div className="relative">
-                      <UserIcon className="auth-input-icon text-purple-300" />
-                      <input
-                        type="text"
-                        value={formData.fullName}
-                        onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                        className="input bg-[#2f1066] border-purple-500/20 text-purple-100 placeholder-purple-400"
-                        placeholder="John Doe"
-                      />
-                    </div>
-                  </div>
-
-                  {/* EMAIL */}
-                  <div>
-                    <label className="auth-input-label text-purple-200">Email</label>
-                    <div className="relative">
-                      <MailIcon className="auth-input-icon text-purple-300" />
-                      <input
-                        type="email"
-                        value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="input bg-[#2f1066] border-purple-500/20 text-purple-100 placeholder-purple-400"
-                        placeholder="you@example.com"
-                      />
-                    </div>
-                  </div>
-
-                  {/* PASSWORD */}
-                  <div>
-                    <label className="auth-input-label text-purple-200">Password</label>
-                    <div className="relative">
-                      <LockIcon className="auth-input-icon text-purple-300" />
-                      <input
-                        type="password"
-                        value={formData.password}
-                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                        className="input bg-[#2f1066] border-purple-500/20 text-purple-100 placeholder-purple-400"
-                        placeholder="Enter your password"
-                      />
-                    </div>
-                  </div>
-
-                  {/* SUBMIT BUTTON */}
-                  <button
-                    className="auth-btn bg-purple-600 hover:bg-purple-700 text-white shadow-lg shadow-purple-500/40"
-                    type="submit"
-                    disabled={isSigningUp}
-                  >
-                    {isSigningUp ? (
-                      <LoaderIcon className="w-full h-5 animate-spin text-center" />
-                    ) : (
-                      "Create Account"
-                    )}
-                  </button>
-                </form>
-
-                {/* LOGIN LINK */}
-                <div className="mt-6 text-center">
-                  <Link to="/login" className="auth-link text-purple-300 hover:text-purple-200">
-                    Already have an account? Login
-                  </Link>
-                </div>
-              </div>
+    <div className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-[#E9D8FD] via-[#D6E4FF] to-[#F3E8FF]">
+      <div className="w-full max-w-4xl mx-auto">
+        
+        {/* Glass Card */}
+        <div className="backdrop-blur-xl bg-white/60 shadow-2xl border border-white/30 rounded-3xl overflow-hidden flex flex-col md:flex-row">
+          
+          {/* Left Section */}
+          <div className="md:w-1/2 p-10 flex flex-col justify-center">
+            
+            <div className="text-center mb-8">
+              <MessageCircleIcon className="w-12 h-12 mx-auto text-indigo-500 drop-shadow-md" />
+              <h2 className="text-3xl font-semibold text-gray-800 mt-3">
+                Create Account
+              </h2>
+              <p className="text-gray-500 mt-1">Join Connectify today</p>
             </div>
 
-            {/* RIGHT IMAGE SECTION */}
-            <div className="hidden md:w-1/2 md:flex items-center justify-center p-6 bg-gradient-to-bl from-[#4c1d95]/40 to-[#1e1b4b]/10">
+            <form onSubmit={handleSubmit} className="space-y-5">
+              
+              {/* Full Name */}
               <div>
-                <img
-                  src="/signup.png"
-                  alt="Connectify Signup Illustration"
-                  className="w-3/4 h-auto object-contain mx-auto"
-                />
-
-                <div className="mt-6 text-center">
-                  <h3 className="text-xl font-medium text-purple-300">Connect Effortlessly</h3>
-
-                  <div className="mt-4 flex justify-center gap-4">
-                    <span className="auth-badge bg-purple-700/40 text-purple-200 border-purple-500/30">Free</span>
-                    <span className="auth-badge bg-purple-700/40 text-purple-200 border-purple-500/30">Fast</span>
-                    <span className="auth-badge bg-purple-700/40 text-purple-200 border-purple-500/30">Secure</span>
-                  </div>
+                <label className="text-gray-700 font-medium">Full Name</label>
+                <div className="relative mt-1">
+                  <UserIcon className="absolute left-3 top-3 text-gray-400" />
+                  <input
+                    type="text"
+                    className="w-full pl-10 pr-3 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-300 focus:border-indigo-500 bg-white text-gray-800 placeholder-gray-400"
+                    placeholder="John Doe"
+                    value={formData.fullName}
+                    onChange={(e) =>
+                      setFormData({ ...formData, fullName: e.target.value })
+                    }
+                  />
                 </div>
               </div>
-            </div>
 
+              {/* Email */}
+              <div>
+                <label className="text-gray-700 font-medium">Email</label>
+                <div className="relative mt-1">
+                  <MailIcon className="absolute left-3 top-3 text-gray-400" />
+                  <input
+                    type="email"
+                    className="w-full pl-10 pr-3 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-300 focus:border-indigo-500 bg-white text-gray-800 placeholder-gray-400"
+                    placeholder="you@example.com"
+                    value={formData.email}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
+                  />
+                </div>
+              </div>
+
+              {/* Password */}
+              <div>
+                <label className="text-gray-700 font-medium">Password</label>
+                <div className="relative mt-1">
+                  <LockIcon className="absolute left-3 top-3 text-gray-400" />
+                  <input
+                    type="password"
+                    className="w-full pl-10 pr-3 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-300 focus:border-indigo-500 bg-white text-gray-800 placeholder-gray-400"
+                    placeholder="Enter your password"
+                    value={formData.password}
+                    onChange={(e) =>
+                      setFormData({ ...formData, password: e.target.value })
+                    }
+                  />
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={isSigningUp}
+                className="w-full py-3 rounded-xl text-white bg-gradient-to-r from-indigo-500 to-purple-500 hover:opacity-90 transition-all shadow-lg disabled:opacity-60"
+              >
+                {isSigningUp ? (
+                  <LoaderIcon className="mx-auto h-5 w-5 animate-spin" />
+                ) : (
+                  "Create Account"
+                )}
+              </button>
+            </form>
+
+            <p className="text-center text-gray-600 mt-5">
+              Already have an account?{" "}
+              <Link
+                to="/login"
+                className="text-indigo-600 font-medium hover:underline"
+              >
+                Login
+              </Link>
+            </p>
           </div>
-        </BorderAnimatedContainer>
+
+          {/* Right Illustration Section */}
+          <div className="md:w-1/2 bg-gradient-to-b from-indigo-500/20 to-purple-500/10 flex items-center justify-center p-10">
+            <div className="text-center">
+              <img
+                src="/signup.png"
+                className="w-64 mx-auto drop-shadow-xl"
+                alt="Signup Illustration"
+              />
+              <h3 className="text-xl mt-6 font-medium text-indigo-700">
+                Connect Effortlessly
+              </h3>
+
+              <div className="mt-4 flex justify-center gap-3">
+                <span className="px-4 py-1 bg-white/70 rounded-full text-indigo-700 text-sm shadow">
+                  Free
+                </span>
+                <span className="px-4 py-1 bg-white/70 rounded-full text-indigo-700 text-sm shadow">
+                  Fast
+                </span>
+                <span className="px-4 py-1 bg-white/70 rounded-full text-indigo-700 text-sm shadow">
+                  Secure
+                </span>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
   );
 }
-
-export default SignUpPage;

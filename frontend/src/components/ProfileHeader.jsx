@@ -27,9 +27,10 @@ function ProfileHeader() {
   };
 
   return (
-    <div className="p-6 border-b border-slate-700/50">
+    <div className="p-6 border-b border-gray-300">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
+
           {/* AVATAR */}
           <div className="avatar online">
             <button
@@ -41,6 +42,7 @@ function ProfileHeader() {
                 alt="User image"
                 className="size-full object-cover"
               />
+
               <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
                 <span className="text-white text-xs">Change</span>
               </div>
@@ -55,13 +57,13 @@ function ProfileHeader() {
             />
           </div>
 
-          {/* USERNAME & ONLINE TEXT */}
+          {/* USERNAME */}
           <div>
-            <h3 className="text-slate-200 font-medium text-base max-w-[180px] truncate">
+            <h3 className="text-gray-900 font-medium text-base max-w-[180px] truncate">
               {authUser.fullName}
             </h3>
 
-            <p className="text-slate-400 text-xs">Online</p>
+            <p className="text-gray-700 text-xs">Online</p>
           </div>
         </div>
 
@@ -69,7 +71,7 @@ function ProfileHeader() {
         <div className="flex gap-4 items-center">
           {/* LOGOUT BTN */}
           <button
-            className="text-slate-400 hover:text-slate-200 transition-colors"
+            className="text-gray-700 hover:text-gray-900 transition-colors"
             onClick={logout}
           >
             <LogOutIcon className="size-5" />
@@ -77,11 +79,10 @@ function ProfileHeader() {
 
           {/* SOUND TOGGLE BTN */}
           <button
-            className="text-slate-400 hover:text-slate-200 transition-colors"
+            className="text-gray-700 hover:text-gray-900 transition-colors"
             onClick={() => {
-              // play click sound before toggling
-              mouseClickSound.currentTime = 0; // reset to start
-              mouseClickSound.play().catch((error) => console.log("Audio play failed:", error));
+              mouseClickSound.currentTime = 0;
+              mouseClickSound.play().catch(() => {});
               toggleSound();
             }}
           >
@@ -96,4 +97,5 @@ function ProfileHeader() {
     </div>
   );
 }
+
 export default ProfileHeader;
