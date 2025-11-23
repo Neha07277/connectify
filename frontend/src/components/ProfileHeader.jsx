@@ -27,7 +27,7 @@ function ProfileHeader() {
   };
 
   return (
-    <div className="p-6 border-b border-gray-300">
+    <div className="p-6 border-b border-gray-300 bg-gradient-to-r from-[#6466F1] to-[#A755F6]">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
 
@@ -59,27 +59,25 @@ function ProfileHeader() {
 
           {/* USERNAME */}
           <div>
-            <h3 className="text-gray-900 font-medium text-base max-w-[180px] truncate">
+            <h3 className="text-white font-medium text-base max-w-[180px] truncate">
               {authUser.fullName}
             </h3>
 
-            <p className="text-gray-700 text-xs">Online</p>
+            <p className="text-white/80 text-xs">Online</p>
           </div>
         </div>
 
         {/* BUTTONS */}
         <div className="flex gap-4 items-center">
-          {/* LOGOUT BTN */}
           <button
-            className="text-gray-700 hover:text-gray-900 transition-colors"
+            className="text-white hover:text-gray-200 transition-colors"
             onClick={logout}
           >
             <LogOutIcon className="size-5" />
           </button>
 
-          {/* SOUND TOGGLE BTN */}
           <button
-            className="text-gray-700 hover:text-gray-900 transition-colors"
+            className="text-white hover:text-gray-200 transition-colors"
             onClick={() => {
               mouseClickSound.currentTime = 0;
               mouseClickSound.play().catch(() => {});
