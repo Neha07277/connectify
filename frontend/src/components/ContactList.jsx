@@ -18,20 +18,44 @@ function ContactList() {
       {allContacts.map((contact) => (
         <div
           key={contact._id}
-          className="bg-cyan-500/10 p-4 rounded-lg cursor-pointer hover:bg-cyan-500/20 transition-colors"
+          className="
+            bg-white/80 
+            p-4 
+            rounded-xl 
+            cursor-pointer 
+            hover:bg-white 
+            shadow-sm 
+            border border-gray-200
+            transition-all
+          "
           onClick={() => setSelectedUser(contact)}
         >
           <div className="flex items-center gap-3">
-            <div className={`avatar ${onlineUsers.includes(contact._id) ? "online" : "offline"}`}>
-              <div className="size-12 rounded-full">
-                <img src={contact.profilePic || "/avatar.png"} />
+            
+            {/* Avatar */}
+            <div
+              className={`avatar ${
+                onlineUsers.includes(contact._id) ? "online" : "offline"
+              }`}
+            >
+              <div className="size-12 rounded-full overflow-hidden">
+                <img
+                  src={contact.profilePic || "/avatar.png"}
+                  alt="profile"
+                  className="object-cover"
+                />
               </div>
             </div>
-            <h4 className="text-slate-200 font-medium">{contact.fullName}</h4>
+
+            {/* Name Text — DARK & VISIBLE */}
+            <h4 className="text-gray-900 font-medium">
+              {contact.fullName}
+            </h4>
           </div>
         </div>
       ))}
     </>
   );
 }
+
 export default ContactList;
