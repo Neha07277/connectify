@@ -12,7 +12,7 @@ export default function MessageInput({ onSend }) {
   const [loadingTone, setLoadingTone] = useState(false);
   const [toneSuggestions, setToneSuggestions] = useState(null);
 
-  // ⭐ FIXED BACKEND URL + FIXED SUGGESTION HANDLING
+  /** ⭐ Analyze Tone API Call */
   const analyzeTone = async () => {
     if (!text.trim()) {
       toast.error("Type a message first");
@@ -31,11 +31,8 @@ export default function MessageInput({ onSend }) {
 
       const data = await res.json();
 
-      console.log("Tone Analysis Response:", data);
-
-      // ⭐ FIX: backend returns { suggestion: "..." }
       if (data.suggestion) {
-        setToneSuggestions([data.suggestion]); // convert to array for ToneSuggestion UI
+        setToneSuggestions([data.suggestion]);
       } else {
         toast.error("No suggestions received");
       }
@@ -47,18 +44,22 @@ export default function MessageInput({ onSend }) {
     setLoadingTone(false);
   };
 
+  /** ⭐ When user clicks Send */
   const handleSend = (e) => {
     e.preventDefault();
+
     if (!text.trim() && !image) {
       toast.error("Write a message or upload an image");
       return;
     }
 
-    onSend(text, image);
+    onSend(text, image); // ⬅️ FIXED: send both text + image
+
     setText("");
     setImage(null);
   };
 
+  /** ⭐ Handle image upload */
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -82,6 +83,7 @@ export default function MessageInput({ onSend }) {
       )}
 
       <form onSubmit={handleSend} className="flex items-center gap-3">
+        {/* Tone Button */}
         <button
           type="button"
           onClick={analyzeTone}
@@ -91,6 +93,7 @@ export default function MessageInput({ onSend }) {
           {loadingTone ? "..." : <SparklesIcon className="w-5 h-5 text-white" />}
         </button>
 
+        {/* Text Area */}
         <textarea
           placeholder="Type your message..."
           value={text}
@@ -99,6 +102,7 @@ export default function MessageInput({ onSend }) {
             focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none min-h-[45px]"
         />
 
+        {/* Image Upload Button */}
         <button
           type="button"
           onClick={() => fileInputRef.current.click()}
@@ -115,6 +119,7 @@ export default function MessageInput({ onSend }) {
           onChange={handleImageChange}
         />
 
+        {/* Send Button */}
         <button
           type="submit"
           className="p-3 bg-blue-600 rounded-xl hover:bg-blue-700 text-white flex items-center"

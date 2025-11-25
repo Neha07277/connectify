@@ -7,6 +7,7 @@ import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
 import toneRoutes from "./routes/toneRoutes.js";
 
+
 import { connectDB } from "./lib/db.js";
 import { ENV } from "./lib/env.js";
 import { app, server } from "./lib/socket.js";
@@ -38,6 +39,7 @@ app.use(
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api", toneRoutes);
+app.use("/api/messages", messageRoutes);
 
 // --------------------
 // DEPLOYMENT (Production Only)

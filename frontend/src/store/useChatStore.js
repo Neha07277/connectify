@@ -21,34 +21,45 @@ export const useChatStore = create((set, get) => ({
   setActiveTab: (tab) => set({ activeTab: tab }),
   setSelectedUser: (selectedUser) => set({ selectedUser }),
 
+  /** GET ALL CONTACTS */
   getAllContacts: async () => {
     set({ isUsersLoading: true });
     try {
       const res = await axiosInstance.get("/messages/contacts");
       set({ allContacts: res.data });
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Something went wrong");
     } finally {
       set({ isUsersLoading: false });
     }
   },
+
+  /** GET CHAT PARTNERS */
   getMyChatPartners: async () => {
     set({ isUsersLoading: true });
     try {
       const res = await axiosInstance.get("/messages/chats");
       set({ chats: res.data });
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Something went wrong");
     } finally {
       set({ isUsersLoading: false });
     }
   },
 
+  /** GET MESSAGES (ID fixed conversion) */
   getMessagesByUserId: async (userId) => {
     set({ isMessagesLoading: true });
     try {
       const res = await axiosInstance.get(`/messages/${userId}`);
-      set({ messages: res.data });
+
+      const cleaned = res.data.map((m) => ({
+        ...m,
+        senderId: m.senderId.toString(),
+        receiverId: m.receiverId.toString(),
+      }));
+
+      set({ messages: cleaned });
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong");
     } finally {
@@ -56,6 +67,7 @@ export const useChatStore = create((set, get) => ({
     }
   },
 
+  /** SEND MESSAGE (sent ✔ delivered 👁 seen) */
   sendMessage: async (messageData) => {
     const { selectedUser, messages } = get();
     const { authUser } = useAuthStore.getState();
@@ -64,26 +76,72 @@ export const useChatStore = create((set, get) => ({
 
     const optimisticMessage = {
       _id: tempId,
-      senderId: authUser._id,
-      receiverId: selectedUser._id,
+      senderId: authUser._id.toString(),
+      receiverId: selectedUser._id.toString(),
       text: messageData.text,
       image: messageData.image,
       createdAt: new Date().toISOString(),
-      isOptimistic: true, // flag to identify optimistic messages (optional)
+      status: "sent",
     };
-    // immidetaly update the ui by adding the message
+
     set({ messages: [...messages, optimisticMessage] });
 
     try {
-      const res = await axiosInstance.post(`/messages/send/${selectedUser._id}`, messageData);
-      set({ messages: messages.concat(res.data) });
+      const res = await axiosInstance.post(
+        `/messages/send/${selectedUser._id}`,
+        messageData
+      );
+
+      const savedMessage = {
+        ...res.data,
+        senderId: res.data.senderId.toString(),
+        receiverId: res.data.receiverId.toString(),
+      };
+
+      set({
+        messages: get().messages.map((msg) =>
+          msg._id === tempId ? savedMessage : msg
+        ),
+      });
     } catch (error) {
-      // remove optimistic message on failure
-      set({ messages: messages });
-      toast.error(error.response?.data?.message || "Something went wrong");
+      set({ messages });
+      toast.error(error.response?.data?.message || "Failed to send message");
     }
   },
 
+  /** MARK AS DELIVERED (✔) */
+  markAsDelivered: async (fromUserId) => {
+    try {
+      await axiosInstance.put(`/messages/delivered/${fromUserId}`);
+
+      const updated = get().messages.map((msg) =>
+        msg.senderId === fromUserId.toString() && msg.status === "sent"
+          ? { ...msg, status: "delivered" }
+          : msg
+      );
+
+      set({ messages: updated });
+    } catch (error) {
+      console.error("Failed to mark delivered:", error);
+    }
+  },
+
+  /** MARK AS SEEN (👁) */
+  markAsSeen: async (messageId) => {
+    try {
+      await axiosInstance.put(`/messages/seen/${messageId}`);
+
+      const updated = get().messages.map((msg) =>
+        msg._id === messageId ? { ...msg, status: "seen" } : msg
+      );
+
+      set({ messages: updated });
+    } catch (error) {
+      console.error("Failed to mark seen:", error);
+    }
+  },
+
+  /** SOCKET LISTENERS */
   subscribeToMessages: () => {
     const { selectedUser, isSoundEnabled } = get();
     if (!selectedUser) return;
@@ -91,23 +149,46 @@ export const useChatStore = create((set, get) => ({
     const socket = useAuthStore.getState().socket;
 
     socket.on("newMessage", (newMessage) => {
-      const isMessageSentFromSelectedUser = newMessage.senderId === selectedUser._id;
-      if (!isMessageSentFromSelectedUser) return;
+      const cleanedMessage = {
+        ...newMessage,
+        senderId: newMessage.senderId.toString(),
+        receiverId: newMessage.receiverId.toString(),
+      };
 
-      const currentMessages = get().messages;
-      set({ messages: [...currentMessages, newMessage] });
+      const isMessageFromSelectedUser =
+        cleanedMessage.senderId === selectedUser._id.toString();
+      if (!isMessageFromSelectedUser) return;
+
+      set({ messages: [...get().messages, cleanedMessage] });
 
       if (isSoundEnabled) {
-        const notificationSound = new Audio("/sounds/notification.mp3");
-
-        notificationSound.currentTime = 0; // reset to start
-        notificationSound.play().catch((e) => console.log("Audio play failed:", e));
+        const sound = new Audio("/sounds/notification.mp3");
+        sound.currentTime = 0;
+        sound.play().catch(() => {});
       }
+    });
+
+    socket.on("messagesDelivered", ({ from }) => {
+      const updated = get().messages.map((msg) =>
+        msg.senderId === from.toString() && msg.status === "sent"
+          ? { ...msg, status: "delivered" }
+          : msg
+      );
+      set({ messages: updated });
+    });
+
+    socket.on("messageSeen", ({ messageId }) => {
+      const updated = get().messages.map((msg) =>
+        msg._id === messageId ? { ...msg, status: "seen" } : msg
+      );
+      set({ messages: updated });
     });
   },
 
   unsubscribeFromMessages: () => {
     const socket = useAuthStore.getState().socket;
     socket.off("newMessage");
+    socket.off("messagesDelivered");
+    socket.off("messageSeen");
   },
 }));
