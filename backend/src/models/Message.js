@@ -12,13 +12,22 @@ const messageSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+
     text: {
       type: String,
       trim: true,
       maxlength: 2000,
     },
+
     image: {
       type: String,
+    },
+
+    // ⭐ NEW FIELD (Sent / Delivered / Seen)
+    status: {
+      type: String,
+      enum: ["sent", "delivered", "seen"],
+      default: "sent",
     },
   },
   { timestamps: true }
